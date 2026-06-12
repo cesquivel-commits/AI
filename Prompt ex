@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraPrompt | AI Lesson Plan & Resource Prompt Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        accent: {
+                            emerald: '#10b981',
+                            rose: '#f43f5e',
+                            amber: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for premium feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Custom focus rings for enhanced ADA navigation visibility */
+        input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible {
+            outline: 3px solid #6366f1 !important;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Screen Reader Skip Link -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:p-4 focus:bg-primary-600 focus:text-white focus:rounded-lg focus:shadow-lg">
+        Skip to main content
+    </a>
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- Logo Icon -->
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-primary-500/20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-primary-600 to-indigo-500 bg-clip-text text-transparent">
+                        AuraPrompt
+                    </h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">AI Lesson Architect & Prompt Suite</p>
+                </div>
+            </div>
+
+            <!-- Accessibility Controls & Theme Toggle -->
+            <div class="flex items-center space-x-3">
+                <!-- High Contrast/Text Size Controls for Accessibility -->
+                <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-1 space-x-1" role="group" aria-label="Accessibility settings">
+                    <button id="btn-text-decrease" class="p-1.5 rounded text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 transition" aria-label="Decrease text size">
+                        <span class="text-xs font-bold" aria-hidden="true">A-</span>
+                    </button>
+                    <button id="btn-text-reset" class="px-2 py-1 rounded text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 transition" aria-label="Reset text size">
+                        Reset
+                    </button>
+                    <button id="btn-text-increase" class="p-1.5 rounded text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 transition" aria-label="Increase text size">
+                        <span class="text-sm font-bold" aria-hidden="true">A+</span>
+                    </button>
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button id="theme-toggle" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-all focus:outline-none" aria-label="Toggle dark mode">
+                    <!-- Sun Icon (for dark mode) -->
+                    <svg id="theme-sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.828-9.9a5 5 0 117.071 7.071l-7.071-7.071z"></path>
+                    </svg>
+                    <!-- Moon Icon (for light mode) -->
+                    <svg id="theme-moon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main id="main-content" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Welcome Banner & Quick Presets -->
+        <section class="mb-8" aria-labelledby="welcome-heading">
+            <div class="bg-gradient-to-r from-primary-900 to-indigo-950 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl"></div>
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary-500/20 text-indigo-200 mb-4 border border-indigo-500/30">
+                        ✨ ADA Compliant & Pedagogically Anchored
+                    </span>
+                    <h2 id="welcome-heading" class="text-2xl sm:text-3.5xl font-black tracking-tight mb-2">
+                        Build Bulletproof Lesson Generation Prompts
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed">
+                        Design comprehensive, standard-aligned lesson structures complete with differentiated student handouts, accessible formatting, and adaptive knowledge checks. Ready to run on any AI model.
+                    </p>
+                    
+                    <!-- Presets Module -->
+                    <div>
+                        <h3 class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-3">Load Instant Pedagogic Presets</h3>
+                        <div class="flex flex-wrap gap-2" role="group" aria-label="Sample configurations">
+                            <button onclick="loadPreset('photosynthesis')" class="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold border border-white/10 transition-all focus:ring-2 focus:ring-white">
+                                🌱 Science: Photosynthesis (Grade 7)
+                            </button>
+                            <button onclick="loadPreset('pythagorean')" class="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold border border-white/10 transition-all focus:ring-2 focus:ring-white">
+                                📐 Math: Pythagorean Theorem (Grade 8)
+                            </button>
+                            <button onclick="loadPreset('democracy')" class="px-3.5 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold border border-white/10 transition-all focus:ring-2 focus:ring-white">
+                                ⚖️ Civics: Principles of Democracy (Grade 10)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Two-Column Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: Parameter Configuration Form (7/12 width) -->
+            <section class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 space-y-6" aria-labelledby="generator-form-title">
+                <div class="border-b border-slate-100 dark:border-slate-800/80 pb-4 flex items-center justify-between">
+                    <h2 id="generator-form-title" class="text-lg font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                        Lesson Parameters
+                    </h2>
+                    <button onclick="resetForm()" class="text-xs text-slate-500 hover:text-accent-rose dark:text-slate-400 dark:hover:text-rose-400 font-semibold transition" aria-label="Reset form fields">
+                        Clear All
+                    </button>
+                </div>
+
+                <form id="prompt-architect-form" class="space-y-5" onsubmit="event.preventDefault();">
+                    
+                    <!-- Group 1: General Meta -->
+                    <fieldset class="space-y-4">
+                        <legend class="text-xs font-extrabold text-primary-500 uppercase tracking-widest">1. Foundation</legend>
+                        
+                        <div>
+                            <label for="lesson-title" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Lesson Title</label>
+                            <input type="text" id="lesson-title" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm transition-colors focus:ring-primary-500 focus:border-primary-500" placeholder="e.g., Photosynthesis & Plant Energy" required>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="lesson-subject" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Subject</label>
+                                <input type="text" id="lesson-subject" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm transition-colors focus:ring-primary-500 focus:border-primary-500" placeholder="e.g., Biology" required>
+                            </div>
+                            <div>
+                                <label for="lesson-grade" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Grade Level / Cohort</label>
+                                <select id="lesson-grade" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm transition-colors focus:ring-primary-500 focus:border-primary-500">
+                                    <option value="Kindergarten - Grade 2">K - Grade 2</option>
+                                    <option value="Grade 3 - Grade 5">Grade 3 - 5</option>
+                                    <option value="Grade 6 - Grade 8" selected>Grade 6 - 8 (Middle)</option>
+                                    <option value="Grade 9 - Grade 12">Grade 9 - 12 (High)</option>
+                                    <option value="Higher Education">Higher Education</option>
+                                    <option value="Professional Development">Professional Training</option>
+                                </select>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Group 2: Learning Objectives (Dynamic) -->
+                    <fieldset class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <legend class="text-xs font-extrabold text-primary-500 uppercase tracking-widest">2. Objectives (SMART)</legend>
+                            <button type="button" onclick="addObjective()" class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-bold flex items-center gap-1" aria-label="Add learning objective">
+                                <span aria-hidden="true">+</span> Add Objective
+                            </button>
+                        </div>
+                        <div id="objectives-container" class="space-y-2.5">
+                            <!-- Dynamically injected objective inputs go here -->
+                        </div>
+                    </fieldset>
+
+                    <!-- Group 3: Vocab / Key Terms (Dynamic) -->
+                    <fieldset class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <legend class="text-xs font-extrabold text-primary-500 uppercase tracking-widest">3. Vocabulary & Concepts</legend>
+                            <button type="button" onclick="addKeyTerm()" class="text-xs text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 font-bold flex items-center gap-1" aria-label="Add dynamic key term">
+                                <span aria-hidden="true">+</span> Add Term
+                            </button>
+                        </div>
+                        <div id="key-terms-container" class="space-y-2.5">
+                            <!-- Dynamically injected vocabulary elements go here -->
+                        </div>
+                    </fieldset>
+
+                    <!-- Group 4: Structuring Pedagogy -->
+                    <fieldset class="space-y-4">
+                        <legend class="text-xs font-extrabold text-primary-500 uppercase tracking-widest">4. Pedagogical Preferences</legend>
+                        
+                        <div>
+                            <label for="analogy-preference" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Analogies & Real-World Framing</label>
+                            <select id="analogy-preference" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm transition-colors focus:ring-primary-500 focus:border-primary-500">
+                                <option value="highly-relatable">Highly relatable daily life examples (highly active visualizer)</option>
+                                <option value="scientific-technical">Industrial, engineering or scientific case studies</option>
+                                <option value="historical-narrative">Historical and storytelling narratives</option>
+                                <option value="minimalist">Direct and minimalist definition-first explanation</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="lesson-summary" class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Context / Core Focus of Summary</label>
+                            <textarea id="lesson-summary" rows="2" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-sm transition-colors focus:ring-primary-500 focus:border-primary-500 resize-none" placeholder="e.g., Focus specifically on the light-dependent cycle and how chloroplasts convert photons..."></textarea>
+                        </div>
+                    </fieldset>
+
+                    <!-- Group 5: Assessment & Student Materials -->
+                    <fieldset class="space-y-4 pt-2">
+                        <legend class="text-xs font-extrabold text-primary-500 uppercase tracking-widest">5. Assessment & Accessibility</legend>
+                        
+                        <!-- Toggle for Handout -->
+                        <div class="flex items-start justify-between bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-150 dark:border-slate-850">
+                            <div class="flex items-start space-x-3">
+                                <div class="pt-0.5">
+                                    <input type="checkbox" id="generate-handout" class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500" checked>
+                                </div>
+                                <div>
+                                    <label for="generate-handout" class="block text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200">Include Differentiated Handout</label>
+                                    <p class="text-slate-500 dark:text-slate-400 text-[11px] leading-tight mt-0.5">Prompt the AI to construct a high-accessibility structural handout for student use.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Toggle for Quiz -->
+                        <div class="flex flex-col bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-150 dark:border-slate-850 space-y-3">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="pt-0.5">
+                                        <input type="checkbox" id="generate-quiz" class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500" checked onchange="toggleQuizSettings()">
+                                    </div>
+                                    <div>
+                                        <label for="generate-quiz" class="block text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200">Include "Test Your Knowledge" Quiz</label>
+                                        <p class="text-slate-500 dark:text-slate-400 text-[11px] leading-tight mt-0.5">Prompt the AI to produce formative assessment materials.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sub Quiz Parameters (Show/Hide dynamically) -->
+                            <div id="quiz-meta-panel" class="grid grid-cols-2 gap-3 pl-7 transition-all duration-250">
+                                <div>
+                                    <label for="quiz-count" class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-1">Question Count</label>
+                                    <select id="quiz-count" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2 py-1 text-xs transition">
+                                        <option value="3">3 Questions</option>
+                                        <option value="5" selected>5 Questions</option>
+                                        <option value="10">10 Questions</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="quiz-type" class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 mb-1">Question Style</label>
+                                    <select id="quiz-type" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2 py-1 text-xs transition">
+                                        <option value="multiple-choice">Multiple Choice (MCQ)</option>
+                                        <option value="mixed">Mixed (MCQ, Fill, Essay)</option>
+                                        <option value="analytical">Scenario-based Analytical</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ADA / Universal Design for Learning (UDL) Checkbox -->
+                        <div class="flex items-start space-x-3 bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-150 dark:border-slate-850">
+                            <div class="pt-0.5">
+                                <input type="checkbox" id="ada-compliant" class="w-4 h-4 text-primary-600 border-slate-300 rounded focus:ring-primary-500" checked disabled>
+                            </div>
+                            <div>
+                                <label for="ada-compliant" class="block text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                                    Enforce ADA / UDL Standards
+                                    <span class="px-1.5 py-0.2 bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300 rounded text-[9px] font-extrabold">Auto-On</span>
+                                </label>
+                                <p class="text-slate-500 dark:text-slate-400 text-[11px] leading-tight mt-0.5">Enforces descriptive header hierarchies, clear layout indicators, screen-reader friendly formatting instructions, and cognitive support structures.</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </section>
+
+            <!-- RIGHT COLUMN: Output Preview & Simulated sandbox (7/12 width) -->
+            <section class="lg:col-span-7 space-y-6" aria-labelledby="output-workspace-title">
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                    
+                    <!-- Tab Headers (ADA Tablist Role Included) -->
+                    <div class="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-150 dark:border-slate-800 p-2" role="tablist" aria-label="Output views">
+                        <div class="flex flex-wrap gap-1">
+                            <button id="tab-prompt" onclick="switchTab('prompt')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all focus:outline-none flex items-center gap-2 bg-white dark:bg-slate-800 shadow-sm text-primary-600 dark:text-white" role="tab" aria-selected="true" aria-controls="panel-prompt">
+                                <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                Engineered Prompt
+                            </button>
+                            <button id="tab-preview" onclick="switchTab('preview')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all focus:outline-none flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" role="tab" aria-selected="false" aria-controls="panel-preview">
+                                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                Sandbox Simulation
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Panel A: Real Generated Prompt -->
+                    <div id="panel-prompt" class="p-6 space-y-4 block" role="tabpanel" aria-labelledby="tab-prompt">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 id="output-workspace-title" class="text-sm font-bold text-slate-800 dark:text-slate-200">
+                                    Ready-to-Paste Structural Prompt
+                                </h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Optimized for Gemini, ChatGPT, Claude, and school AI platforms.</p>
+                            </div>
+                            <!-- Copy Button -->
+                            <button id="btn-copy" onclick="copyPromptToClipboard()" class="bg-primary-600 hover:bg-primary-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-primary-500/10 flex items-center gap-1.5 transition-all focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                                </svg>
+                                Copy Prompt
+                            </button>
+                        </div>
+
+                        <!-- Rendered Textarea (Selectable and readable) -->
+                        <div class="relative">
+                            <textarea id="prompt-output" readonly class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-[13px] font-mono leading-relaxed h-[480px] focus:ring-2 focus:ring-primary-500 focus:outline-none resize-none" aria-label="Engineered lesson plan prompt output"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Panel B: Simulated Mock Lesson Plan & Output sandbox -->
+                    <div id="panel-preview" class="p-6 space-y-6 hidden" role="tabpanel" aria-labelledby="tab-preview">
+                        <div class="border-b border-slate-100 dark:border-slate-800/60 pb-4">
+                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 rounded text-[10px] font-extrabold tracking-wider uppercase">Interactive Sandbox</span>
+                            <h3 class="text-base font-extrabold mt-1">Simulated Output Sandbox Preview</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Visualize a dynamic sample of the highly structured lesson, handout, and quiz that the AI will build for you.</p>
+                        </div>
+
+                        <!-- Mock Output Display Container -->
+                        <div class="bg-slate-50 dark:bg-slate-950 rounded-xl p-5 border border-slate-200 dark:border-slate-800 space-y-6 max-h-[460px] overflow-y-auto">
+                            <!-- Section: Lesson Meta -->
+                            <div>
+                                <span id="preview-tag-subject" class="text-[10px] font-bold uppercase tracking-wider text-primary-500">BIOLOGY</span>
+                                <h4 id="preview-tag-title" class="text-lg font-extrabold text-slate-900 dark:text-white mt-0.5">Photosynthesis & Plant Energy Conversion</h4>
+                                <p id="preview-tag-grade" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">Standard Targeted: Middle School, Grade 6 - Grade 8</p>
+                            </div>
+
+                            <!-- Section: SMART Objectives -->
+                            <div class="space-y-2">
+                                <h5 class="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-widest">🎯 Learning Objectives</h5>
+                                <ul id="preview-list-objectives" class="list-disc list-inside text-xs text-slate-600 dark:text-slate-300 space-y-1.5 pl-1 leading-relaxed">
+                                    <!-- Populated via JS -->
+                                </ul>
+                            </div>
+
+                            <!-- Section: Analogies & Concept -->
+                            <div class="space-y-2 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-150 dark:border-slate-850">
+                                <h5 id="preview-analogy-title" class="text-xs font-extrabold text-indigo-500 uppercase tracking-widest flex items-center gap-1.5">
+                                    💡 Real-World Framing & Analogy
+                                </h5>
+                                <p id="preview-analogy-body" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    <!-- Dynamic explanation of selected analogy parameter -->
+                                </p>
+                            </div>
+
+                            <!-- Section: Key Terms Definitions -->
+                            <div class="space-y-2">
+                                <h5 class="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-widest">🔑 Key Concepts</h5>
+                                <div id="preview-terms-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <!-- Populated via JS -->
+                                </div>
+                            </div>
+
+                            <!-- Section: Interactive Quiz Simulator -->
+                            <div id="preview-quiz-section" class="space-y-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+                                <div class="flex items-center justify-between">
+                                    <h5 class="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-widest flex items-center gap-1.5">
+                                        📝 Formative Assessment Simulator
+                                    </h5>
+                                    <span class="text-[10px] text-slate-400 font-semibold" id="quiz-question-counter">5 Questions</span>
+                                </div>
+                                <div id="quiz-questions-sandbox" class="space-y-4">
+                                    <!-- Generated quiz questions based on options -->
+                                </div>
+                                <button onclick="checkSandboxQuiz()" id="btn-submit-quiz" class="mt-2 w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs tracking-wider uppercase rounded-xl transition duration-150 shadow-md shadow-emerald-500/10">
+                                    Check Quiz Answers
+                                </button>
+                                <div id="quiz-sandbox-feedback" class="hidden p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs rounded-xl border border-indigo-150 dark:border-indigo-900 text-center font-semibold"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guidance Info Box -->
+                <div class="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 rounded-2xl p-5 flex gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-primary-600 dark:text-indigo-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="text-xs font-bold text-slate-900 dark:text-indigo-200 uppercase tracking-wider">How to leverage this AI Prompt</h4>
+                        <ol class="list-decimal list-inside text-xs text-slate-600 dark:text-slate-400 space-y-1 leading-relaxed">
+                            <li>Populate your parameters using the form or one of our rapid preset buttons.</li>
+                            <li>Configure handouts and quizzes depending on your classroom agenda.</li>
+                            <li>Copy the compiled output prompt using the <strong class="text-primary-600 dark:text-indigo-400">Copy Prompt</strong> button.</li>
+                            <li>Paste into your favorite generative AI chat window (Gemini, ChatGPT, or Claude) to construct full educational frameworks!</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Global Toast Alert Container (ADA Compliant) -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 pointer-events-none" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- Footer Area -->
+    <footer class="mt-12 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-500 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-medium">AuraPrompt is designed to support structured universal designs for learning (UDL) and WCAG compliant educators.</p>
+            <p class="mt-1">Crafted with high contrast variables for screen-readers and visual adjustments.</p>
+        </div>
+    </footer>
+
+    <!-- Internal Interactive Scripting -->
+    <script>
+        // Preset Datastore
+        const PRESETS = {
+            photosynthesis: {
+                title: "Energy Pathways: Photosynthesis",
+                subject: "Biology / Plant Sciences",
+                grade: "Grade 6 - Grade 8",
+                objectives: [
+                    "Identify the core inputs (sunlight, carbon dioxide, water) and outputs (glucose, oxygen) of photosynthesis.",
+                    "Explain the structural role chloroplasts and chlorophyll play in trapping light energy.",
+                    "Describe the ecological importance of plant energy pathways to animal respiration."
+                ],
+                keyTerms: [
+                    { term: "Chloroplast", definition: "The cellular organelle in plants where photosynthesis takes place." },
+                    { term: "Chlorophyll", definition: "The green pigment inside chloroplasts that captures light energy." },
+                    { term: "Stomata", definition: "Microscopic microscopic pores on leaves that manage carbon dioxide and oxygen exchange." }
+                ],
+                analogy: "highly-relatable",
+                summary: "Focus closely on the light-dependent stage. Explain how plants act like nature's solar power grids, storing cellular solar battery energy for long term structural stability."
+            },
+            pythagorean: {
+                title: "Exploring the Pythagorean Theorem",
+                subject: "Mathematics / Geometry",
+                grade: "Grade 6 - Grade 8",
+                objectives: [
+                    "Formulate the mathematical expression of a² + b² = c² correctly for any right triangle.",
+                    "Apply the Pythagorean Theorem to solve for unknown hypotenuse dimensions.",
+                    "Determine real-world distance values using Cartesian grid coordinates."
+                ],
+                keyTerms: [
+                    { term: "Hypotenuse", definition: "The longest side of a right triangle, directly opposite the 90-degree angle." },
+                    { term: "Right Angle", definition: "An angle measuring exactly 90 degrees." },
+                    { term: "Theorem", definition: "A mathematical statement that has been proven to be universally true." }
+                ],
+                analogy: "scientific-technical",
+                summary: "Focus mathematical attention on simple 3D structural construction, showing carpenters, surveyors, and architects deploying physical geometric relationships to secure right angles."
+            },
+            democracy: {
+                title: "Core Principles of Democracy",
+                subject: "Civics & Government Studies",
+                grade: "Grade 9 - Grade 12",
+                objectives: [
+                    "Analyze the distinct characteristics of direct democracy versus a representative constitutional republic.",
+                    "Evaluate the balance of power engineered via checks and balances.",
+                    "Explain the constitutional role of the electorate and civil rights."
+                ],
+                keyTerms: [
+                    { term: "Sovereignty", definition: "Supreme power or authority over a self-governing political state." },
+                    { term: "Electorate", definition: "The entire group of citizens entitled to cast a vote in an election." },
+                    { term: "Pluralism", definition: "A system in which multiple political parties, perspectives, and groups coexist." }
+                ],
+                analogy: "historical-narrative",
+                summary: "Demonstrate ancient Athenian foundations alongside 18th-century Enlightenment philosophical structures. Explain why democratic institutions require continuous active citizen participation."
+            }
+        };
+
+        // Standard Default State Variables
+        let objectives = ["Understand the primary concept.", "Identify core components."];
+        let keyTerms = [
+            { term: "Term 1", definition: "The definition or primary meaning of term 1." },
+            { term: "Term 2", definition: "The definition or primary meaning of term 2." }
+        ];
+
+        // On Document Initial Load
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initAccessibility();
+            
+            // Render default inputs
+            renderObjectivesInputs();
+            renderKeyTermsInputs();
+            
+            // Set input listeners to automatically regenerate the engineered prompt
+            document.querySelectorAll('#prompt-architect-form input, #prompt-architect-form select, #prompt-architect-form textarea').forEach(el => {
+                el.addEventListener('input', generatePrompt);
+            });
+            
+            // Build initial output
+            generatePrompt();
+        });
+
+        // Toggle Dark/Light Mode
+        function initTheme() {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const sunIcon = document.getElementById('theme-sun');
+            const moonIcon = document.getElementById('theme-moon');
+
+            // Apply system default or saved preference
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            });
+        }
+
+        // Accessibility Adjustments
+        function initAccessibility() {
+            let baseSizePercent = 100;
+            const textDecrease = document.getElementById('btn-text-decrease');
+            const textReset = document.getElementById('btn-text-reset');
+            const textIncrease = document.getElementById('btn-text-increase');
+
+            textDecrease.addEventListener('click', () => {
+                if (baseSizePercent > 85) {
+                    baseSizePercent -= 5;
+                    document.documentElement.style.fontSize = `${baseSizePercent}%`;
+                }
+            });
+
+            textReset.addEventListener('click', () => {
+                baseSizePercent = 100;
+                document.documentElement.style.fontSize = `100%`;
+            });
+
+            textIncrease.addEventListener('click', () => {
+                if (baseSizePercent < 125) {
+                    baseSizePercent += 5;
+                    document.documentElement.style.fontSize = `${baseSizePercent}%`;
+                }
+            });
+        }
+
+        // Dynamic Input Mechanics: OBJECTIVES
+        function renderObjectivesInputs() {
+            const container = document.getElementById('objectives-container');
+            container.innerHTML = '';
+            
+            objectives.forEach((obj, idx) => {
+                const row = document.createElement('div');
+                row.className = "flex items-center gap-2 group";
+                row.innerHTML = `
+                    <span class="text-xs text-slate-400 font-bold w-4">${idx + 1}.</span>
+                    <input type="text" id="obj-input-${idx}" class="flex-grow bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-xs focus:ring-primary-500" value="${obj}" oninput="updateObjective(${idx}, this.value)" aria-label="Objective ${idx + 1}">
+                    <button type="button" onclick="removeObjective(${idx})" class="p-1.5 text-slate-400 hover:text-accent-rose focus:text-accent-rose group-hover:opacity-100 transition" aria-label="Remove Objective ${idx + 1}">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addObjective() {
+            if (objectives.length < 6) {
+                objectives.push("");
+                renderObjectivesInputs();
+                document.getElementById(`obj-input-${objectives.length - 1}`).focus();
+                generatePrompt();
+            } else {
+                showToast("Maximum of 6 learning objectives allowed.", "error");
+            }
+        }
+
+        function updateObjective(idx, value) {
+            objectives[idx] = value;
+            generatePrompt();
+        }
+
+        function removeObjective(idx) {
+            if (objectives.length > 1) {
+                objectives.splice(idx, 1);
+                renderObjectivesInputs();
+                generatePrompt();
+            } else {
+                showToast("At least one objective is required.", "error");
+            }
+        }
+
+        // Dynamic Input Mechanics: KEY TERMS
+        function renderKeyTermsInputs() {
+            const container = document.getElementById('key-terms-container');
+            container.innerHTML = '';
+            
+            keyTerms.forEach((kt, idx) => {
+                const row = document.createElement('div');
+                row.className = "space-y-1 p-2 bg-slate-50 dark:bg-slate-950 border border-slate-150 dark:border-slate-850 rounded-xl relative group";
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="term-name-${idx}" class="w-1/3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1 text-xs font-bold" placeholder="Term" value="${kt.term}" oninput="updateKeyTerm(${idx}, 'term', this.value)" aria-label="Key concept word ${idx + 1}">
+                        <input type="text" id="term-def-${idx}" class="flex-grow bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-2.5 py-1 text-xs" placeholder="Definition / core meaning" value="${kt.definition}" oninput="updateKeyTerm(${idx}, 'definition', this.value)" aria-label="Definition ${idx + 1}">
+                        <button type="button" onclick="removeKeyTerm(${idx})" class="p-1 text-slate-400 hover:text-accent-rose group-hover:opacity-100 transition" aria-label="Remove Term ${idx + 1}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function addKeyTerm() {
+            if (keyTerms.length < 6) {
+                keyTerms.push({ term: "", definition: "" });
+                renderKeyTermsInputs();
+                document.getElementById(`term-name-${keyTerms.length - 1}`).focus();
+                generatePrompt();
+            } else {
+                showToast("Maximum of 6 vocabulary items supported.", "error");
+            }
+        }
+
+        function updateKeyTerm(idx, field, value) {
+            keyTerms[idx][field] = value;
+            generatePrompt();
+        }
+
+        function removeKeyTerm(idx) {
+            if (keyTerms.length > 1) {
+                keyTerms.splice(idx, 1);
+                renderKeyTermsInputs();
+                generatePrompt();
+            } else {
+                showToast("At least one key concept is required.", "error");
+            }
+        }
+
+        // Toggle visual parameters on sub quiz module
+        function toggleQuizSettings() {
+            const hasQuiz = document.getElementById('generate-quiz').checked;
+            const metaPanel = document.getElementById('quiz-meta-panel');
+            if (hasQuiz) {
+                metaPanel.classList.remove('opacity-40', 'pointer-events-none');
+            } else {
+                metaPanel.classList.add('opacity-40', 'pointer-events-none');
+            }
+            generatePrompt();
+        }
+
+        // Clear and Reset Entire Workspace Form
+        function resetForm() {
+            document.getElementById('lesson-title').value = '';
+            document.getElementById('lesson-subject').value = '';
+            document.getElementById('lesson-grade').value = 'Grade 6 - Grade 8';
+            document.getElementById('lesson-summary').value = '';
+            document.getElementById('analogy-preference').value = 'highly-relatable';
+            
+            objectives = [""];
+            keyTerms = [{ term: "", definition: "" }];
+            
+            renderObjectivesInputs();
+            renderKeyTermsInputs();
+            generatePrompt();
+            showToast("Workplace configuration cleared.", "success");
+        }
+
+        // Preset Loader
+        function loadPreset(key) {
+            const data = PRESETS[key];
+            if (!data) return;
+
+            document.getElementById('lesson-title').value = data.title;
+            document.getElementById('lesson-subject').value = data.subject;
+            document.getElementById('lesson-grade').value = data.grade;
+            document.getElementById('analogy-preference').value = data.analogy;
+            document.getElementById('lesson-summary').value = data.summary;
+
+            objectives = [...data.objectives];
+            keyTerms = data.keyTerms.map(x => ({ ...x }));
+
+            renderObjectivesInputs();
+            renderKeyTermsInputs();
+            generatePrompt();
+            buildInteractiveMockSandbox();
+            
+            showToast(`Loaded ${data.title} Preset!`, "success");
+        }
+
+        // CORE ENGINE: Compiled Prompt Generator Generator
+        function generatePrompt() {
+            const title = document.getElementById('lesson-title').value || "[Lesson Title]";
+            const subject = document.getElementById('lesson-subject').value || "[Lesson Subject]";
+            const grade = document.getElementById('lesson-grade').value;
+            const analogy = document.getElementById('analogy-preference').value;
+            const summary = document.getElementById('lesson-summary').value || "[General focus specified by teacher]";
+            const hasHandout = document.getElementById('generate-handout').checked;
+            const hasQuiz = document.getElementById('generate-quiz').checked;
+            const quizCount = document.getElementById('quiz-count').value;
+            const quizType = document.getElementById('quiz-type').value;
+
+            // Generate clean lists for the prompt injection
+            const cleanObjList = objectives.filter(o => o.trim() !== "").map(o => `* SMART Objective: ${o}`).join("\n");
+            const cleanTermsList = keyTerms.filter(kt => kt.term.trim() !== "").map(kt => `* "${kt.term}": ${kt.definition}`).join("\n");
+
+            // Build Prompt Template
+            let prompt = `You are an expert pedagogy designer, instructional engineer, and accessibility (ADA) strategist. Create a complete, high-structure, and pedagogically sound lesson plan optimized for:
+
+COHORT / GRADE LEVEL: ${grade}
+SUBJECT: ${subject}
+LESSON TITLE: ${title}
+
+---
+
+### CORE OBJECTIVES & COMPLIANCE REQUIREMENTS
+This lesson plan and all generated materials must adhere strictly to Universal Design for Learning (UDL) guidelines, satisfying both ADA compliance requirements and cognitive scaffolding:
+1. Ensure a logical hierarchy (use standard markdown headers: #, ##, ###, and never skip levels).
+2. Write with a high color-contrast readability layout and use explicit verbal cues.
+3. Keep sentence structures clean, offering scaffolding details and simplified definitions where possible.
+4. Integrate phonetic hints or conceptual links for complex terminology.
+
+---
+
+### REQUIRED CONTENT SECTIONS
+
+1. **LESSON META-DATA**
+   Provide a standard lesson overview aligning with targeted educational standards. Include the subject area, estimated lesson length, and required class materials.
+
+2. **SMART LEARNING OBJECTIVES**
+   Based on the following parameters, formulate clear, observable, and measurable milestones:
+${cleanObjList || "* [Construct standard SMART learning objectives mapping to this domain]"}
+
+3. **ANALOGY & REAL-WORLD ENGAGEMENT**
+   Design a core introductory analogy tailored to the following tone/structure profile:
+   * Preference Profile: ${analogy.replace('-', ' ')}
+   * Context Focus: ${summary}
+   Use this concept to anchor the lesson's main core challenge in concrete, observable everyday physics or social dynamics.
+
+4. **KEY VOCABULARY MATRIX**
+   Present these specific vocabulary terms and complete semantic explanations within a structural markdown table:
+${cleanTermsList || "* [Automatically establish critical terms list if undefined]"}
+
+5. **LESSON EXPOSITION SUMMARY**
+   Draft a comprehensive teacher explanation summary (approx. 350 words) mapping directly to:
+   "${summary}"
+   Provide direct explanation points, structural flow instructions, and answers to common student misconceptions.`;
+
+            if (hasHandout) {
+                prompt += `\n\n6. **STUDENT HANDOUT (ADA & UDL COMPLIANT)**
+   Create a highly accessible, print-ready, clean-contrast student handout. 
+   * It must feature an 'Objective Summary' using simplified, big-concept language.
+   * Format sections with clear, readable borders, structured bullet points, and blank spaces for student guided-notes.
+   * Provide a practical, low-friction, hands-on classroom activity description that requires only standard materials.`;
+            }
+
+            if (hasQuiz) {
+                prompt += `\n\n7. **"TEST YOUR KNOWLEDGE" FORMATIVE QUIZ**
+   Build a formative knowledge check matching this format:
+   * Total Questions: ${quizCount}
+   * Question Style: ${quizType.replace('-', ' ')}
+   * Accessibility Rules: Questions must be conceptually distinct and explicitly clear, avoiding confusing 'none of the above' or trick questions.
+   * Answer Key: Include a fully detailed explanations section at the very end of the output document, detailing why correct choices are mathematically/scientifically valid.`;
+            }
+
+            prompt += `\n\nEnsure that all outputs are in robust Markdown format, avoiding complex HTML wrappers, so that they can easily be copied directly into typical text processors or learning management systems.`;
+
+            // Inject compiled markdown prompt into display output
+            document.getElementById('prompt-output').value = prompt;
+
+            // Trigger real-time Sandbox update to mirror inputs
+            buildInteractiveMockSandbox();
+        }
+
+        // SANDBOX COMPONENT: Updates Mock Visualizer based on user inputs
+        function buildInteractiveMockSandbox() {
+            const title = document.getElementById('lesson-title').value || "Photosynthesis & Plant Energy Conversion";
+            const subject = document.getElementById('lesson-subject').value || "BIOLOGY";
+            const grade = document.getElementById('lesson-grade').value;
+            const analogyVal = document.getElementById('analogy-preference').value;
+            const hasQuiz = document.getElementById('generate-quiz').checked;
+            const quizCount = parseInt(document.getElementById('quiz-count').value);
+
+            // Update Meta & Title
+            document.getElementById('preview-tag-subject').innerText = subject.toUpperCase();
+            document.getElementById('preview-tag-title').innerText = title;
+            document.getElementById('preview-tag-grade').innerText = `Target Cohort: ${grade}`;
+
+            // Update Objectives
+            const objList = document.getElementById('preview-list-objectives');
+            objList.innerHTML = '';
+            const filteredObjs = objectives.filter(o => o.trim() !== "");
+            if (filteredObjs.length > 0) {
+                filteredObjs.forEach(obj => {
+                    const li = document.createElement('li');
+                    li.innerText = obj;
+                    objList.appendChild(li);
+                });
+            } else {
+                objList.innerHTML = '<li>Understand and map key scientific/mathematical relationships correctly.</li><li>Define critical operational vocabulary in simple student-friendly terminology.</li>';
+            }
+
+            // Update Analogy Text based on Preference
+            const analogyTitle = document.getElementById('preview-analogy-title');
+            const analogyBody = document.getElementById('preview-analogy-body');
+
+            if (analogyVal === 'highly-relatable') {
+                analogyTitle.innerHTML = '🌱 Core Analogy: Solar Panels on Your Roof';
+                analogyBody.innerText = "Just like solar panels capture sunlight to charge batteries and power household electronics, plants deploy green pigment (chlorophyll) like millions of microscopic solar grids to turn physical light waves into digestible battery packs (glucose) they can use to grow.";
+            } else if (analogyVal === 'scientific-technical') {
+                analogyTitle.innerHTML = '⚙️ Technical Framing: Industrial Solar Fuel Plants';
+                analogyBody.innerText = "Consider an industrial facility designed to convert raw solar radiation directly into refined hydrogen fuel. The chloroplast represents the physical plant facility, while sunlight triggers chemical pathways that split gaseous atmospheric inputs into highly structured structural fuels.";
+            } else if (analogyVal === 'historical-narrative') {
+                analogyTitle.innerHTML = '📖 Historical Framing: Discovering the Invisible Air';
+                analogyBody.innerText = "In the late 1700s, Jan Ingenhousz discovered that plants only purified carbon-filled 'bad air' when direct sunlight was actively hitting their leaves. This historical narrative details how we learned that plants are literally fueled by invisible components surrounding us.";
+            } else {
+                analogyTitle.innerHTML = '💡 Definition Focus: Direct Chemical Mechanics';
+                analogyBody.innerText = "Plants execute a metabolic synthesis process converting radiant carbon molecules directly to dense sugars. This is a fundamental thermodynamic bridge sustaining biological life cycles.";
+            }
+
+            // Update Key Concepts Grid
+            const termsGrid = document.getElementById('preview-terms-grid');
+            termsGrid.innerHTML = '';
+            const filteredTerms = keyTerms.filter(kt => kt.term.trim() !== "");
+            if (filteredTerms.length > 0) {
+                filteredTerms.forEach(kt => {
+                    const termCard = document.createElement('div');
+                    termCard.className = "bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-150 dark:border-slate-850 shadow-sm";
+                    termCard.innerHTML = `<h6 class="text-xs font-bold text-slate-850 dark:text-white">${escapeHtml(kt.term)}</h6><p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-normal">${escapeHtml(kt.definition)}</p>`;
+                    termsGrid.appendChild(termCard);
+                });
+            } else {
+                termsGrid.innerHTML = `
+                    <div class="bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-150 dark:border-slate-850 shadow-sm">
+                        <h6 class="text-xs font-bold text-slate-850 dark:text-white">Core Term A</h6>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-normal">System term definitions automatically generated within standard prompt output arrays.</p>
+                    </div>
+                `;
+            }
+
+            // Update Quiz Component
+            const quizSection = document.getElementById('preview-quiz-section');
+            if (hasQuiz) {
+                quizSection.classList.remove('hidden');
+                document.getElementById('quiz-question-counter').innerText = `${quizCount} Question Simulator`;
+                
+                // Build dynamic simulated questions based on count
+                const questionsSandbox = document.getElementById('quiz-questions-sandbox');
+                questionsSandbox.innerHTML = '';
+                
+                // Static bank of highly optimized sample interactive questions
+                const qBank = [
+                    {
+                        q: "Which specific cell structure acts as the factory site where photosynthesis takes place?",
+                        options: ["Mitochondria", "Chloroplast", "Nucleus", "Ribosome"],
+                        correct: 1,
+                        expl: "Chloroplasts contain the green pigment chlorophyll which actively captures sunlight."
+                    },
+                    {
+                        q: "What is the primary organic product generated by plants during light conversion cycles?",
+                        options: ["Carbon Dioxide", "Water Vapor", "Glucose (Sugar)", "Nitrogen Gas"],
+                        correct: 2,
+                        expl: "Glucose serves as the vital chemical energy source for both plant structure and animals."
+                    },
+                    {
+                        q: "What raw atmospheric input enters the plant leaf cells through stomata pores?",
+                        options: ["Pure Oxygen", "Carbon Dioxide", "Liquid Water", "Argon Gas"],
+                        correct: 1,
+                        expl: "Stomata are the gatekeepers on the bottom of plant leaves absorbing carbon dioxide from the air."
+                    },
+                    {
+                        q: "In our core solar panel analogy, what physical plant substance acts like the PV silicon capture grids?",
+                        options: ["The Roots", "The Stem Cells", "Chlorophyll Pigments", "Glucose Crystals"],
+                        correct: 2,
+                        expl: "Chlorophyll is the specific active pigment that captures photons and utilizes light energy."
+                    },
+                    {
+                        q: "Why is photosynthesis considered an essential thermodynamic bridge for animal life?",
+                        options: ["It produces nitrogen", "It cools the global atmosphere by 10 degrees", "It produces oxygen and glucose needed for respiration", "It eliminates sunlight pollution"],
+                        correct: 2,
+                        expl: "Oxygen and glucose are the primary input requirements for aerobic cellular respiration in animals."
+                    }
+                ];
+
+                // Render matching number of mock questions
+                for (let i = 0; i < Math.min(quizCount, qBank.length); i++) {
+                    const qItem = qBank[i];
+                    const qContainer = document.createElement('div');
+                    qContainer.className = "bg-white dark:bg-slate-900 p-3.5 rounded-lg border border-slate-150 dark:border-slate-850 space-y-2";
+                    
+                    let optionsHTML = '';
+                    qItem.options.forEach((opt, oIdx) => {
+                        optionsHTML += `
+                            <label class="flex items-center space-x-2.5 p-2 rounded-md hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition text-xs text-slate-700 dark:text-slate-300">
+                                <input type="radio" name="sandbox-q-${i}" value="${oIdx}" class="w-3.5 h-3.5 text-emerald-600 border-slate-300 focus:ring-emerald-500">
+                                <span>${opt}</span>
+                            </label>
+                        `;
+                    });
+
+                    qContainer.innerHTML = `
+                        <h6 class="text-xs font-bold text-slate-800 dark:text-slate-200">Q${i+1}: ${qItem.q}</h6>
+                        <div class="space-y-1">${optionsHTML}</div>
+                    `;
+                    questionsSandbox.appendChild(qContainer);
+                }
+                
+                // Reset feedback state
+                document.getElementById('quiz-sandbox-feedback').classList.add('hidden');
+                document.getElementById('btn-submit-quiz').classList.remove('hidden');
+
+            } else {
+                quizSection.classList.add('hidden');
+            }
+        }
+
+        // Validate the answers in the interactive sandbox quiz
+        function checkSandboxQuiz() {
+            const hasQuiz = document.getElementById('generate-quiz').checked;
+            if (!hasQuiz) return;
+
+            const quizCount = parseInt(document.getElementById('quiz-count').value);
+            const qBankAnswers = [1, 2, 1, 2, 2]; // Hardcoded correct index indicators
+            let correctCount = 0;
+            let totalAnswered = 0;
+
+            for (let i = 0; i < Math.min(quizCount, qBankAnswers.length); i++) {
+                const selectedOption = document.querySelector(`input[name="sandbox-q-${i}"]:checked`);
+                if (selectedOption) {
+                    totalAnswered++;
+                    if (parseInt(selectedOption.value) === qBankAnswers[i]) {
+                        correctCount++;
+                    }
+                }
+            }
+
+            const feedback = document.getElementById('quiz-sandbox-feedback');
+            feedback.classList.remove('hidden');
+            
+            if (totalAnswered < Math.min(quizCount, qBankAnswers.length)) {
+                feedback.className = "p-3 bg-accent-amber/10 dark:bg-amber-950/40 text-accent-amber text-xs rounded-xl border border-accent-amber/20 text-center font-bold";
+                feedback.innerText = `⚠️ You only answered ${totalAnswered} of ${Math.min(quizCount, qBankAnswers.length)} questions! Complete all answers to finalize.`;
+            } else {
+                const scorePercent = Math.round((correctCount / totalAnswered) * 100);
+                if (scorePercent >= 80) {
+                    feedback.className = "p-3 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 text-xs rounded-xl border border-emerald-200 dark:border-emerald-900/50 text-center font-bold";
+                } else {
+                    feedback.className = "p-3 bg-accent-rose/10 dark:bg-rose-950/40 text-accent-rose text-xs rounded-xl border border-accent-rose/20 text-center font-bold";
+                }
+                feedback.innerText = `📊 Score: ${correctCount} / ${totalAnswered} (${scorePercent}%) - Dynamic verification simulation successfully complete!`;
+            }
+        }
+
+        // Clean text helper to prevent DOM breakage
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Tab Navigation Module (Satisfies ARIA Role Tab Tracking)
+        function switchTab(tabId) {
+            const btnPrompt = document.getElementById('tab-prompt');
+            const btnPreview = document.getElementById('tab-preview');
+            const panelPrompt = document.getElementById('panel-prompt');
+            const panelPreview = document.getElementById('panel-preview');
+
+            if (tabId === 'prompt') {
+                btnPrompt.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all focus:outline-none flex items-center gap-2 bg-white dark:bg-slate-800 shadow-sm text-primary-600 dark:text-white";
+                btnPrompt.setAttribute('aria-selected', 'true');
+                btnPreview.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all focus:outline-none flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800";
+                btnPreview.setAttribute('aria-selected', 'false');
+
+                panelPrompt.classList.remove('hidden');
+                panelPrompt.classList.add('block');
+                panelPreview.classList.add('hidden');
+                panelPreview.classList.remove('block');
+            } else {
+                btnPreview.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all focus:outline-none flex items-center gap-2 bg-white dark:bg-slate-800 shadow-sm text-primary-600 dark:text-white";
+                btnPreview.setAttribute('aria-selected', 'true');
+                btnPrompt.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all focus:outline-none flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800";
+                btnPrompt.setAttribute('aria-selected', 'false');
+
+                panelPreview.classList.remove('hidden');
+                panelPreview.classList.add('block');
+                panelPrompt.classList.add('hidden');
+                panelPrompt.classList.remove('block');
+                
+                // Re-verify layouts
+                buildInteractiveMockSandbox();
+            }
+        }
+
+        // Fallback Clipboard copy operation
+        function copyPromptToClipboard() {
+            const copyText = document.getElementById("prompt-output");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // Mobile compatibility constraint
+
+            try {
+                // Execute standard execution command to guarantee performance within nested iFrames
+                const success = document.execCommand('copy');
+                if (success) {
+                    showToast("Prompt copied to clipboard successfully!", "success");
+                } else {
+                    showToast("Failed to copy prompt automatically.", "error");
+                }
+            } catch (err) {
+                // Fallback attempt
+                navigator.clipboard.writeText(copyText.value)
+                    .then(() => showToast("Prompt copied to clipboard!", "success"))
+                    .catch(() => showToast("Please manually select and copy text.", "error"));
+            }
+        }
+
+        // Toast Alert Manager
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            // Apply different accessibility color accents based on category
+            const accentClass = type === "success" 
+                ? "border-emerald-500 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100" 
+                : "border-accent-rose bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100";
+                
+            const icon = type === "success"
+                ? `<svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+                : `<svg class="w-5 h-5 text-accent-rose" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+
+            toast.className = `flex items-center space-x-3 p-4 rounded-xl shadow-xl border-l-4 ${accentClass} pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 max-w-sm mb-3`;
+            toast.innerHTML = `
+                <div class="flex-shrink-0">${icon}</div>
+                <div class="text-xs font-bold leading-normal">${message}</div>
+            `;
+
+            container.appendChild(toast);
+
+            // Animate In
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 50);
+
+            // Animate Out & Remove
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
